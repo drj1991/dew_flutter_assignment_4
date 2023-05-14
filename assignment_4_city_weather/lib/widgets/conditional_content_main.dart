@@ -9,28 +9,25 @@ class ConditionalContentMain extends StatefulWidget {
   bool serviceEnabled = false;
   bool permissionGranted = false;
 
-  ConditionalContentMain(
-      {required this.serviceEnabled,
-      required this.permissionGranted,
-      super.key});
+  ConditionalContentMain({
+    required this.serviceEnabled,
+    required this.permissionGranted,
+    super.key,
+  });
 
   @override
   State<ConditionalContentMain> createState() => _ConditionalContentMainState();
 }
 
 class _ConditionalContentMainState extends State<ConditionalContentMain> {
-  GlobalKey<MyState> _myKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
-    var selectedCity =
-        Provider.of<SelectedCityProvider>(context).cityPojo.latLong.split(",");
+    var weatherData = Provider.of<SelectedCityProvider>(context).weatherData;
 
-    if (widget.serviceEnabled && widget.permissionGranted) {
-      if (selectedCity.length >= 2) {
-        return ContentMain(selectedCity[0], selectedCity[1]);
-      } else {
-        return WidgetError();
-      }
+    if (widget.serviceEnabled &&
+        widget.permissionGranted &&
+        weatherData != null) {
+      return ContentMain();
     } else {
       return WidgetError();
     }

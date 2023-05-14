@@ -3,6 +3,7 @@ import 'package:assignment_4_city_weather/util/constants.dart';
 import 'package:assignment_4_city_weather/widgets/city_spinner.dart';
 import 'package:assignment_4_city_weather/widgets/conditional_content_main.dart';
 import 'package:assignment_4_city_weather/widgets/widget_error.dart';
+import 'package:assignment_4_city_weather/widgets/widget_get_location.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
@@ -27,6 +28,7 @@ class _SplashState extends State<Splash> {
   bool _permissionGranted = false;
   LocationData? _locationData;
   List<CityPojo>? _cityList;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -44,20 +46,31 @@ class _SplashState extends State<Splash> {
           alignment: Alignment.center,
           child: ChangeNotifierProvider(
             create: (context) => SelectedCityProvider(),
-            child: Column(
-              children: [
-                CitySpinner(cityList: _cityList),
-                SizedBox(
-                  height: kPadding16,
-                ),
-                SelectecText(),
-                ConditionalContentMain(serviceEnabled: _serviceEnabled, permissionGranted: _permissionGranted,),
-                Text(_locationData != null
-                    ? "${_locationData?.longitude}, "
-                        "${_locationData?.latitude}"
-                    : "No Location"),
-              ],
-            ),
+            child: _isLoading
+                ? CircularProgressIndicator()
+                : Column(
+                    children: [
+                      _serviceEnabled && _permissionGranted
+                          ? CitySpinner(cityList: _cityList)
+                          : WidgetGetLocation(
+                              () {
+                                checkLocationEnabled();
+                              },
+                            ),
+                      SizedBox(
+                        height: kPadding16,
+                      ),
+                      SelectecText(),
+                      ConditionalContentMain(
+                        serviceEnabled: _serviceEnabled,
+                        permissionGranted: _permissionGranted,
+                      ),
+                      Text(_locationData != null
+                          ? "${_locationData?.longitude}, "
+                              "${_locationData?.latitude}"
+                          : "No Location"),
+                    ],
+                  ),
           ),
         ),
       ),
@@ -65,14 +78,23 @@ class _SplashState extends State<Splash> {
   }
 
   void checkLocationEnabled() async {
+    _isLoading = true;
     _serviceEnabled = await hasLocationEnabled();
-    setState(() {});
+    //setState(() {});
     _permissionGranted = await hasPermissionGranted();
-    setState(() {});
-    _locationData = await location.getLocation();
-    setState(() {});
-    print("${_locationData?.longitude},${_locationData?.latitude}");
-    _cityList = await getCityList("${_locationData?.longitude},${_locationData?.latitude}");
+    //setState(() {});
+    if (_serviceEnabled && _permissionGranted) {
+      try {
+        _locationData = await location.getLocation();
+      } catch (e) {
+        print(e);
+      }
+      //setState(() {});
+      print("${_locationData?.longitude},${_locationData?.latitude}");
+      _cityList = await getCityList(
+          "${_locationData?.longitude},${_locationData?.latitude}");
+    }
+    _isLoading = false;
     setState(() {});
   }
 }
