@@ -15,7 +15,7 @@ class SelectedCityProvider extends ChangeNotifier {
     _cityPojo = value;
     var latLong = cityPojo.latLong.split(",");
     if (latLong.length >= 2) {
-      getWestherData(latLong[0], latLong[1]);
+      getWeatherData(latLong[0], latLong[1]);
     }
     notifyListeners();
   }
@@ -34,17 +34,14 @@ class SelectedCityProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getWestherData(String lat, String long) async {
+  void getWeatherData(String lat, String long) async {
     try {
-      print("DRJ: try");
       isWeatherLoading = true;
       weatherData = await getLocationWeatherData(lat, long);
-    } catch (e) {
-      print("DRJ: catch");
+    } catch (e, s) {
       weatherData = null;
-      //print(e);
+      print(s);
     } finally {
-      print("DRJ: finally");
       isWeatherLoading = false;
     }
   }

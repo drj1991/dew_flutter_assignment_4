@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 
 Future<bool> hasLocationEnabled() async {
@@ -15,16 +14,16 @@ Future<bool> hasLocationEnabled() async {
   return true;
 }
 
-Future<bool> hasPermissionGranted() async {
+Future<PermissionStatus> hasPermissionGranted() async {
   Location location = Location();
-  PermissionStatus permissionGranted = await location.hasPermission();
-  if (permissionGranted == PermissionStatus.denied) {
-    permissionGranted = await location.requestPermission();
-    if (permissionGranted != PermissionStatus.granted) {
+  PermissionStatus permissionStatus = await location.hasPermission();
+  if (permissionStatus != PermissionStatus.granted) {
+    permissionStatus = await location.requestPermission();
+    /*if (permissionStatus != PermissionStatus.granted) {
       //setState(() {});
       return false;
-    }
+    }*/
   }
   //setState(() {});
-  return true;
+  return permissionStatus;
 }

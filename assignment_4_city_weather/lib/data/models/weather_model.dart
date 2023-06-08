@@ -1,7 +1,8 @@
-
 class WeatherModel {
-   double temp = 0;
-   String city = "";
-   String icon = "";
-   String desc = "";
+  double temp = 0;
+  num feelsLike = 0;
+  String icon = "";
+  String desc = "";
+  num minTemp = 0;
+  num maxTem = 0;
 }

@@ -9,7 +9,7 @@ class SelectecText extends StatelessWidget {
   Widget build(BuildContext context) {
     var selectedCity = Provider.of<SelectedCityProvider>(context).cityPojo;
     return Text(
-      "You have Selectedd : ${selectedCity.name}",
+      "You have Selected : ${selectedCity.name}",
       style: kStyleRobotoBlack.copyWith(
         fontSize: kTextSizeTitle,
       ),

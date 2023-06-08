@@ -2,7 +2,6 @@ import 'package:assignment_4_city_weather/data/models/city_pojo.dart';
 import 'package:assignment_4_city_weather/util/constants.dart';
 import 'package:assignment_4_city_weather/widgets/city_spinner.dart';
 import 'package:assignment_4_city_weather/widgets/conditional_content_main.dart';
-import 'package:assignment_4_city_weather/widgets/widget_error.dart';
 import 'package:assignment_4_city_weather/widgets/widget_get_location.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
@@ -11,9 +10,6 @@ import 'package:provider/provider.dart';
 import '../data/datasource/home_page_data_source.dart';
 import '../providers/selected_city_provider.dart';
 import '../util/location_utill.dart';
-import '../util/widget_util.dart';
-import '../widgets/content_main.dart';
-import '../widgets/widget_selected_text.dart';
 
 class Splash extends StatefulWidget {
   const Splash({Key? key}) : super(key: key);
@@ -25,10 +21,23 @@ class Splash extends StatefulWidget {
 class _SplashState extends State<Splash> {
   Location location = Location();
   bool _serviceEnabled = false;
-  bool _permissionGranted = false;
+  PermissionStatus? _permissionGranted;
   LocationData? _locationData;
   List<CityPojo>? _cityList;
   bool _isLoading = false;
+  final snackBar = SnackBar(
+    content: Text(
+      'You have denied location permission. Please allow from application setting.',
+      style: kStyleRobotoMedium.copyWith(
+          fontSize: kTextSizeTitle, color: Colors.white),
+    ),
+    action: SnackBarAction(
+      label: 'Ok',
+      onPressed: () {
+        print("SnackBar ok clicked");
+      },
+    ),
+  );
 
   @override
   void initState() {
@@ -39,7 +48,7 @@ class _SplashState extends State<Splash> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kHomeBackgroundColor,
+      backgroundColor: Colors.blue.shade100,
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.all(kPadding16),
@@ -47,28 +56,24 @@ class _SplashState extends State<Splash> {
           child: ChangeNotifierProvider(
             create: (context) => SelectedCityProvider(),
             child: _isLoading
-                ? CircularProgressIndicator()
+                ? const CircularProgressIndicator()
                 : Column(
                     children: [
-                      _serviceEnabled && _permissionGranted
+                      _serviceEnabled &&
+                              _permissionGranted == PermissionStatus.granted
                           ? CitySpinner(cityList: _cityList)
                           : WidgetGetLocation(
                               () {
                                 checkLocationEnabled();
                               },
                             ),
-                      SizedBox(
+                      const SizedBox(
                         height: kPadding16,
                       ),
-                      SelectecText(),
                       ConditionalContentMain(
                         serviceEnabled: _serviceEnabled,
                         permissionGranted: _permissionGranted,
                       ),
-                      Text(_locationData != null
-                          ? "${_locationData?.longitude}, "
-                              "${_locationData?.latitude}"
-                          : "No Location"),
                     ],
                   ),
           ),
@@ -79,20 +84,20 @@ class _SplashState extends State<Splash> {
 
   void checkLocationEnabled() async {
     _isLoading = true;
+    setState(() {});
     _serviceEnabled = await hasLocationEnabled();
-    //setState(() {});
     _permissionGranted = await hasPermissionGranted();
-    //setState(() {});
-    if (_serviceEnabled && _permissionGranted) {
+    if (_serviceEnabled && _permissionGranted == PermissionStatus.granted) {
       try {
         _locationData = await location.getLocation();
       } catch (e) {
         print(e);
       }
-      //setState(() {});
       print("${_locationData?.longitude},${_locationData?.latitude}");
       _cityList = await getCityList(
           "${_locationData?.longitude},${_locationData?.latitude}");
+    } else if (_permissionGranted == PermissionStatus.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
     _isLoading = false;
     setState(() {});

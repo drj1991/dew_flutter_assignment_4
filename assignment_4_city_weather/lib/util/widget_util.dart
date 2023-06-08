@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:location/location.dart';
 
 Widget getWidgetBaseOnPermission(bool serviceEnabled, bool permissionGranted) {
   if (serviceEnabled && permissionGranted) {

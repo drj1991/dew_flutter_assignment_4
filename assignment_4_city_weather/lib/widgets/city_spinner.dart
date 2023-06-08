@@ -21,7 +21,7 @@ class _CitySpinnerState extends State<CitySpinner> {
   Widget build(BuildContext context) {
     //selectedValue = widget.cityList[0];
     return InputDecorator(
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         filled: true,
         iconColor: kGreyColor,
         fillColor: Colors.white,
@@ -38,21 +38,16 @@ class _CitySpinnerState extends State<CitySpinner> {
             Radius.circular(borderRadious12),
           ),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
-          borderRadius: BorderRadius.circular(borderRadious12),
-        ),
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
-          borderRadius: BorderRadius.circular(borderRadious12),
-        ),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<CityPojo>(
+          isExpanded: true,
           value: selectedValue,
           hint: Text(
             "Select Any Value",
-            style: kStyleRobotoMedium,
+            style: kStyleRobotoMedium.copyWith(
+              color: kTextColorBlack,
+            ),
           ),
           items: widget.cityList
               ?.map<DropdownMenuItem<CityPojo>>((CityPojo value) {
@@ -61,8 +56,25 @@ class _CitySpinnerState extends State<CitySpinner> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(value.name, style: kStyleRobotoMedium),
-                  Text(value.latLong, style: kStyleRobotoMedium),
+                  Text(
+                    value.name,
+                    style: kStyleRobotoMedium.copyWith(
+                      color: kTextColorBlack,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: kPadding16,
+                  ),
+                  Expanded(
+                    child: Text(
+                      value.latLong,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: kStyleRobotoMedium.copyWith(
+                        color: kTextColorBlack,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             );

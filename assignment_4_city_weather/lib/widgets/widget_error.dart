@@ -2,14 +2,22 @@ import 'package:assignment_4_city_weather/util/constants.dart';
 import 'package:flutter/material.dart';
 
 class WidgetError extends StatelessWidget {
-  const WidgetError({Key? key}) : super(key: key);
+  String errorMessage = "Error";
+
+  WidgetError(this.errorMessage, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      "Error",
-      style: kStyleRobotoBlack.copyWith(
-        fontSize: kTextSizeTitle,
+    return SizedBox(
+      height: 200,
+      width: 200,
+      child: Center(
+        child: Text(
+          errorMessage,
+          style: kStyleRobotoBlack.copyWith(
+            fontSize: kTextSizeTitle,
+          ),
+        ),
       ),
     );
   }

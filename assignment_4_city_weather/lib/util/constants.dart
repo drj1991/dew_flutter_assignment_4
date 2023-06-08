@@ -20,7 +20,8 @@ const kHomeBackgroundColor = Color(0xFFF2F2F6);
 const kBlueColor = Color(0xFF267BDE);
 const kIconColor = Color(0xFF4E4F4D);
 const kGreyColor = Color(0xFF9FA6AF);
-const kTextColor = Color(0xFF030202);
+const kTextColorBlack = Color(0xFF030202);
+const kTextColor = Color(0xFFFFFFFF);
 
 const kHomePageTitle = "Explore";
 

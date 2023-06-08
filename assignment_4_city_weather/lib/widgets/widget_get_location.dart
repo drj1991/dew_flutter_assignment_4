@@ -10,7 +10,7 @@ class WidgetGetLocation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(
+        const Text(
           "Unable to Get Location",
           style: kStyleRobotoBold,
         ),

@@ -9,6 +9,7 @@ class NetworkHelper {
     var url = Uri.parse(strUrl);
     http.Response res = await http.get(url);
     if (res.statusCode == 200 && res.body != null) {
+      print(res.body);
       return res.body;
     } else {
       return null;
